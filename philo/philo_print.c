@@ -6,7 +6,7 @@
 /*   By: tadiyamu <tadiyamu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/29 16:18:24 by tadiyamu          #+#    #+#             */
-/*   Updated: 2023/05/29 20:06:28 by tadiyamu         ###   ########.fr       */
+/*   Updated: 2023/05/29 22:41:13 by tadiyamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ void	ft_print_int(int time)
 void	ft_philo_print(long long time, int id, char *action, t_data *data)
 {
 	pthread_mutex_lock(&data->config->print_lock.mutex);
+	if (time == 0)
+		ft_putchar('0');
 	ft_print_long(time);
 	ft_putchar(' ');
 	ft_print_int(id);

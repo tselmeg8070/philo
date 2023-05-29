@@ -6,7 +6,7 @@
 /*   By: tadiyamu <tadiyamu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 19:18:04 by tadiyamu          #+#    #+#             */
-/*   Updated: 2023/05/29 20:06:47 by tadiyamu         ###   ########.fr       */
+/*   Updated: 2023/05/29 23:17:16 by tadiyamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,15 @@ long long	ft_atoi(char *str);
 
 int			ft_philo_parse(int argc, char **argv, t_philo_config *config);
 
-long long	ft_get_now();
+long long	ft_get_now(void);
+
+void		ft_philo_free_config(t_philo_config *config);
+
+void		ft_philo_free_data(t_philo_config *config, t_data *data);
+
+int			ft_thread_err(t_philo_config *config, t_data *data);
+
+int			ft_data_err(t_philo_config *config);
 
 #endif
 

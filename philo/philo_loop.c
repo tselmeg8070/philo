@@ -6,7 +6,7 @@
 /*   By: tadiyamu <tadiyamu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 21:11:27 by tadiyamu          #+#    #+#             */
-/*   Updated: 2023/05/29 21:29:59 by tadiyamu         ###   ########.fr       */
+/*   Updated: 2023/05/29 22:50:02 by tadiyamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,31 @@ static int	ft_time_lock(t_data *data, t_thread_config *config)
 	return (1);
 }
 
+void	ft_loop_action_caller(t_data *data, t_thread_config *config)
+{
+	if (data != data->next)
+	{
+		if (data->id % 2 == 1)
+		{
+			pthread_mutex_lock(&data->fork_data.mutex);
+			pthread_mutex_lock(&data->next->fork_data.mutex);
+		}
+		else
+		{
+			pthread_mutex_lock(&data->next->fork_data.mutex);
+			pthread_mutex_lock(&data->fork_data.mutex);
+		}
+		if (ft_eat_condition(data, config))
+			ft_philo_eat(data, config);
+		else if (ft_sleep_condition(config))
+			ft_philo_sleep(data, config);
+		else
+			ft_philo_decide(data, config);
+		pthread_mutex_unlock(&data->next->fork_data.mutex);
+		pthread_mutex_unlock(&data->fork_data.mutex);
+	}
+}
+
 void	*ft_loop_thread(void *arg)
 {
 	t_data			*data;
@@ -66,27 +91,7 @@ void	*ft_loop_thread(void *arg)
 	{
 		if (ft_time_lock(data, &config))
 		{
-			if (data != data->next)
-			{
-				if (data->id % 2 == 1)
-				{
-					pthread_mutex_lock(&data->fork_data.mutex);
-					pthread_mutex_lock(&data->next->fork_data.mutex);
-				}
-				else
-				{
-					pthread_mutex_lock(&data->next->fork_data.mutex);
-					pthread_mutex_lock(&data->fork_data.mutex);
-				}
-				if (ft_eat_condition(data, &config))
-					ft_philo_eat(data, &config);
-				else if (ft_sleep_condition(&config))
-					ft_philo_sleep(data, &config);
-				else
-					ft_philo_decide(data, &config);
-				pthread_mutex_unlock(&data->next->fork_data.mutex);
-				pthread_mutex_unlock(&data->fork_data.mutex);
-			}
+			ft_loop_action_caller(data, &config);
 			ft_philo_die(data, &config);
 			config.now += 1;
 		}

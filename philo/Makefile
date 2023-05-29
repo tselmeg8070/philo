@@ -6,7 +6,7 @@
 #    By: tadiyamu <tadiyamu@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/02/05 16:51:42 by tadiyamu          #+#    #+#              #
-#    Updated: 2023/05/29 16:34:27 by tadiyamu         ###   ########.fr        #
+#    Updated: 2023/05/29 23:05:13 by tadiyamu         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,6 +19,7 @@ FILES = main \
 		philo_actions \
 		philo_loop \
 		philo_loop_conditions \
+		philo_free \
 		philo_print \
 		philo_parser
 

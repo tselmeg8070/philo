@@ -6,7 +6,7 @@
 /*   By: tadiyamu <tadiyamu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/23 21:05:34 by tadiyamu          #+#    #+#             */
-/*   Updated: 2023/05/29 21:30:35 by tadiyamu         ###   ########.fr       */
+/*   Updated: 2023/05/29 23:17:29 by tadiyamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,18 @@ static int	ft_init_config(t_philo_config *config, int argc, char **argv)
 	return (0);
 }
 
+void	ft_destroyer(pthread_t *threads, t_philo_config *config, t_data *data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < config->count)
+		pthread_join(threads[i], NULL);
+	ft_philo_free_data(config, data);
+	ft_philo_free_config(config);
+	free(threads);
+}
+
 int	main(int argc, char **argv)
 {
 	pthread_t		*threads;
@@ -85,25 +97,17 @@ int	main(int argc, char **argv)
 		return (1);
 	}
 	data = malloc(sizeof(t_data) * config.count);
+	if (data == NULL)
+		ft_data_err(&config);
 	threads = malloc(sizeof(pthread_t) * config.count);
+	if (threads == NULL)
+		return (ft_thread_err(&config, data));
 	if (ft_init_thread_data(data, config.count, &config))
 	{
 		i = -1;
 		while (++i < config.count)
 			pthread_create(&threads[i], NULL, ft_loop_thread, &data[i]);
 	}
-	i = -1;
-	while (++i < config.count)
-		pthread_join(threads[i], NULL);
-	i = -1;
-	while (++i < config.count)
-		pthread_mutex_destroy(&data[i].fork_data.mutex);
-	pthread_mutex_destroy(&config.time_lock.mutex);
-	pthread_mutex_destroy(&config.ate_lock.mutex);
-	pthread_mutex_destroy(&config.print_lock.mutex);
-	free(config.ate_lock.ate);
-	free(config.time_lock.n);
-	free(data);
-	free(threads);
+	ft_destroyer(threads, &config, data);
 	return (0);
 }
