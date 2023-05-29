@@ -6,7 +6,7 @@
 /*   By: tadiyamu <tadiyamu@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/25 21:10:12 by tadiyamu          #+#    #+#             */
-/*   Updated: 2023/05/29 20:07:09 by tadiyamu         ###   ########.fr       */
+/*   Updated: 2023/05/29 21:34:10 by tadiyamu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@ void	ft_philo_eat(t_data *data, t_thread_config *config)
 {
 	ft_philo_print(config->now, data->id, PHILO_FORK, data);
 	data->fork_data.fork = 0;
+	data->fork_data.time = config->now + config->eat_duration;
 	data->next->fork_data.fork = 0;
+	data->next->fork_data.time = config->now + config->eat_duration;
 	config->die_time = config->now + config->die_duration;
 	config->state = 2;
 	config->state_time = config->now + config->eat_duration;
@@ -26,23 +28,19 @@ void	ft_philo_eat(t_data *data, t_thread_config *config)
 void	ft_philo_sleep(t_data *data, t_thread_config *config)
 {
 	data->fork_data.fork = 1;
-	data->fork_data.time = config->now + 1;
 	data->next->fork_data.fork = 1;
-	data->next->fork_data.time = config->now + 1;
 	config->state = 3;
-	config->state_time = config->now + 1 + config->sleep_duration;
+	config->state_time = config->now + config->sleep_duration;
 	if (config->should_eat != -1 && config->should_eat != 0)
 		config->should_eat--;
-	ft_philo_print(config->now + 1, data->id, PHILO_SLEEP, data);
+	ft_philo_print(config->now, data->id, PHILO_SLEEP, data);
 }
 
 void	ft_philo_decide(t_data *data, t_thread_config *config)
 {
 	if (config->state == 3 && config->now == config->state_time)
 	{
-		if (data->fork_data.fork && data->next->fork_data.fork
-			&& config->now == data->fork_data.time
-			&& config->now == data->next->fork_data.time)
+		if (config->now == data->next->fork_data.time)
 			ft_philo_eat(data, config);
 		else
 		{
